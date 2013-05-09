@@ -453,38 +453,44 @@ CLOSE COURSE_CURSOR;%>
 
 <!-- STANDARD SKILLS -->
 
-          <section id="skills">
-            <h4>Skills: <a href="#add-skills-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a href="#edit-skills-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
-<%!CURSOR SKILLS_CURSOR IS
+<%!CURSOR STANDARD_SKILLS_CURSOR IS
 
 SELECT SKILLS.SKILL_NAME, SKILLS.SKILL_TYPE 
-FROM SKILLS, USERS, PROJECTS
-WHERE SKILLS.SKILL_ID = USERS.SKILL_ID
-AND PROJECTS.RESUMATOR_ID = USERS.RESUMATOR_ID;
+FROM SKILLS, USERS
+WHERE SKILLS.SKILL_ID = USERSSKILLS.SKILL_ID
+AND USERSSKILLS.RESUMATOR_ID = RESUMATOR_ID
+AND SKILLS.SKILL_TYPE = "STANDARD";
 
-SKILLS_ROW SKILLS_CURSOR%ROWTYPE;
-NO_INFO EXCEPTION;%>
-            <!-- standard skills row -->  
-            <div class="row">
-            
+SKILLS_COUNTER INTEGER = 0;
+STANDARD_SKILLS_ROW STANDARD_SKILLS_CURSOR%ROWTYPE;
+STANDARD_SKILLS_NO_INFO EXCEPTION;%>
+          <section id="skills">
+            <h4>Skills: <a href="#add-skills-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a href="#edit-skills-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+            <!-- standard skills row -->
+<%OPEN STANDARD_SKILLS_CURSOR;
+LOOP
+FETCH STANDARD_SKILLS_CURSOR INTO STANDARD_SKILLS_ROW;
+EXIT WHEN STANDARD_SKILLS_CURSOR%NOTFOUND;%>  
+               <div class="row"><!-- academic coursework row -->
+                <!-- loop through academic coursework 5 max -->
+                <%IF(SKILLS_COUNTER < 4) THEN SKILLS_COUNTER++;%>
                 <div class="span4">
-                <!-- loop through standard skills 5 max -->
                   <ul>
-                     <li>HTML5, CSS, Javascript, AJAX</li>
-                     <li>Oracle Database, SQL, PL/SQL, PSP</li>
-                     <li>Software Development Life Cycle</li>
+                     <li><%=STANDARD_SKILLS_ROW.SKILL_NAME%></li>
                   </ul>
                 </div>
-                
+                <%ELSIF(SKILLS_COUNTER >= 4 && SKILLS_COUNTER < 9) SKILLS_COUNTER++%>
                 <div class="span4">
-                <!-- loop through standard skills 5 max -->  
                   <ul>
-                     <li>Documentation, ERD, Dataflow Diagrams</li>
-                     <li>Web Application Development</li>
+                     <li><%=STANDARD_SKILLS_ROW.SKILL_NAME%></li>
                   </ul>
                 </div>
-
             </div><!-- end standard skills row -->
+<%END LOOP;
+IF STANDARD_SKILLS_CURSOR%ROWCOUNT = 0
+THEN RAISE NO_INFO;
+END IF;
+CLOSE STANDARD_SKILLS_CURSOR;%>
           </section>
           <hr>
 
