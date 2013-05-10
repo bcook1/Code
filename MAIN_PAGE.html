@@ -497,60 +497,89 @@ CLOSE STANDARD_SKILLS_CURSOR;%>
 
 
 <!-- TECHNICAL SKILLS -->
+<%!CURSOR TECHNICAL_SKILLS_CURSOR IS
+
+SELECT SKILLS.SKILL_NAME, SKILLS.SKILL_TYPE 
+FROM SKILLS, USERS
+WHERE SKILLS.SKILL_ID = USERSSKILLS.SKILL_ID
+AND USERSSKILLS.RESUMATOR_ID = RESUMATOR_ID
+AND SKILLS.SKILL_TYPE = "TECHNICAL";
+
+SKILLS_COUNTER INTEGER = 0;
+TECHNICAL_SKILLS_ROW TECHNICAL_SKILLS_CURSOR%ROWTYPE;
+TECHNICAL_SKILLS_NO_INFO EXCEPTION;%>
           <section id="technical">
             <h4>Technical Skills: <a href="#add-technical-skills-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a href="#edit-technical-skills-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
 
             <!-- technical row -->  
-            <div class="row">
-            
+            <%OPEN TECHNICAL_SKILLS_CURSOR;
+LOOP
+FETCH TECHNICAL_SKILLS_CURSOR INTO TECHNICAL_SKILLS_ROW;
+EXIT WHEN TECHNICAL_SKILLS_CURSOR%NOTFOUND;%>  
+               <div class="row"><!-- academic coursework row -->
+                <!-- loop through academic coursework 5 max -->
+                <%IF(SKILLS_COUNTER < 4) THEN SKILLS_COUNTER++;%>
                 <div class="span4">
-                <!-- loop through tech skills 5 max -->
                   <ul>
-                     <li>HTML5, CSS, Javascript, AJAX</li>
-                     <li>Oracle Database, SQL, PL/SQL, PSP</li>
-                     <li>Software Development Life Cycle</li>
+                     <li><%=TECHNICAL_SKILLS_ROW.SKILL_NAME%></li>
                   </ul>
                 </div>
-                
+                <%ELSIF(SKILLS_COUNTER >= 4 && SKILLS_COUNTER < 9) SKILLS_COUNTER++%>
                 <div class="span4">
-                <!-- loop through tech skills 5 max -->  
                   <ul>
-                     <li>Documentation, ERD, Dataflow Diagrams</li>
-                     <li>Web Application Development</li>
+                     <li><%=TECHNICAL_SKILLS_ROW.SKILL_NAME%></li>
                   </ul>
                 </div>
-
-            </div><!-- end technical row -->
-
+            </div><!-- end TECHNICAL skills row -->
+<%END LOOP;
+IF TECHNICAL_SKILLS_CURSOR%ROWCOUNT = 0
+THEN RAISE NO_INFO;
+END IF;
+CLOSE TECHNICAL_SKILLS_CURSOR;%>
           </section>
           <hr>
 
 
 <!-- DESIGN SKILLS -->
+<%!CURSOR DESIGN_SKILLS_CURSOR IS
+
+SELECT SKILLS.SKILL_NAME, SKILLS.SKILL_TYPE 
+FROM SKILLS, USERS
+WHERE SKILLS.SKILL_ID = USERSSKILLS.SKILL_ID
+AND USERSSKILLS.RESUMATOR_ID = RESUMATOR_ID
+AND SKILLS.SKILL_TYPE = "DESIGN";
+
+SKILLS_COUNTER INTEGER = 0;
+DESIGN_SKILLS_ROW DESIGN_SKILLS_CURSOR%ROWTYPE;
+DESIGN_SKILLS_NO_INFO EXCEPTION;%>
           <section id="design">
             <h4>Design Skills: <a href="#add-design-skills-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a href="#edit-design-skills-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
 
-            <!-- technical row -->  
-            <div class="row">
-            
+            <!-- DESIGN row -->  
+                       <%OPEN DESIGN_SKILLS_CURSOR;
+LOOP
+FETCH DESIGN_SKILLS_CURSOR INTO DESIGN_SKILLS_ROW;
+EXIT WHEN DESIGN_SKILLS_CURSOR%NOTFOUND;%>  
+               <div class="row"><!-- academic coursework row -->
+                <!-- loop through academic coursework 5 max -->
+                <%IF(SKILLS_COUNTER < 4) THEN SKILLS_COUNTER++;%>
                 <div class="span4">
-                <!-- loop through tech skills 5 max -->
                   <ul>
-                     <li>Colorpicking</li>
-                     <li>Rounded Corners</li>
-                     <li>Layout</li>
+                     <li><%=DESIGN_SKILLS_ROW.SKILL_NAME%></li>
                   </ul>
                 </div>
-                
+                <%ELSIF(SKILLS_COUNTER >= 4 && SKILLS_COUNTER < 9) SKILLS_COUNTER++%>
                 <div class="span4">
-                <!-- loop through tech skills 5 max -->  
                   <ul>
-                     <li>Formatting</li>
-                     <li>Aesthetics</li>
+                     <li><%=DESIGN_SKILLS_ROW.SKILL_NAME%></li>
                   </ul>
                 </div>
-
-            </div><!-- end technical row -->
+            </div><!-- end DESIGN skills row -->
+<%END LOOP;
+IF DESIGN_SKILLS_CURSOR%ROWCOUNT = 0
+THEN RAISE NO_INFO;
+END IF;
+CLOSE DESIGN_SKILLS_CURSOR;%>
           </section>
           <hr>
 
